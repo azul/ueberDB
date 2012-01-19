@@ -1,5 +1,5 @@
 /**
- * 2011 Peter 'Pita' Martischka
+ * 2012 Max 'Azul' Wiehle
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ exports.database = function(settings)
 
 exports.database.prototype.init = function(callback)
 {
-  this.client = couch.createClient(this.settings.port, this.settings.host, null, null, 0);
+  this.client = couch.createClient(this.settings.port, this.settings.host, this.settings.user, this.settings.pass, this.settings.maxListeners);
   this.db = this.client.db(this.settings.database);
   callback();
 }

@@ -1,14 +1,15 @@
 {
-  "name"           : "ueberDB",
-  "description"    : "transform every database into a object key value store",
-  "url"            : "https://github.com/Pita/ueberDB",
+  "name"           : "ueberDB-couch",
+  "description"    : "transform every database into a object key value store - with couch",
+  "url"            : "https://github.com/azul/ueberDB/tree/couch_db",
   "keywords"       : ["database", "keyvalue"],
-  "author"         : "Peter 'Pita' Martischka <petermartischka@googlemail.com>",
+  "author"         : "Azul <azul@unhosted.org>",
   "dependencies"   : {
-                       "mysql"   : "0.9.4",
-                       "dirty"   : "0.9.4",
-                       "async"   : "0.1.15",
-                       "channels": "0.0.2"
+                       "mysql"        : "0.9.4",
+                       "dirty"        : "0.9.4",
+                       "async"        : "0.1.15",
+                       "channels"     : "0.0.2",
+                       "felix-couchdb": "1.0.3"
                      },
   "devDependencies": {
                        "log4js"  : "0.3.9"

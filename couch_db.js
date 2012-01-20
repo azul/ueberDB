@@ -15,7 +15,8 @@
  */
 
 var couch = require("felix-couchdb");
-var util = require('util');
+var async = require("async");
+var util = require("util");
 
 exports.database = function(settings)
 {
@@ -27,8 +28,8 @@ exports.database = function(settings)
   this.settings = settings;
   
   //set default settings
-  this.settings.cache = 0;
-  this.settings.writeInterval = 0;
+  this.settings.cache = 1000;
+  this.settings.writeInterval = 100;
   this.settings.json = false;
 }
 
@@ -61,11 +62,11 @@ exports.database.prototype.set = function (key, value, callback)
   {
     if(doc == null)
     {
-      _this.db.saveDoc({_id: key, value: value}, callback);
+      _this.db.saveDoc(JSON.stringify({_id: key, value: value}), callback);
     }
     else
     {
-      _this.db.saveDoc({_id: key, _rev: doc._rev, value: value}, callback);
+      _this.db.saveDoc(JSON.stringify({_id: key, _rev: doc._rev, value: value}), callback);
     }
   });
 }
@@ -86,6 +87,40 @@ exports.database.prototype.remove = function (key, callback)
         callback(null);
       });
     }
+  });
+}
+
+exports.database.prototype.doBulk = function (bulk, callback)
+{
+  var _this = this;
+  var setters = [];
+  async.forEach(bulk, function(item, callback)
+  {
+    var set = {_id: item.key};
+
+    // TODO: optimize me. we can get all documents in one go.
+    _this.db.getDoc(item.key, function(er, doc)
+    {
+      if(doc != null)
+      {
+        set._rev = doc._rev;
+      }
+      if(item.type == "set")
+      {
+        set.value = item.value;
+        setters.push(set);
+      }
+      else if(item.type == "remove")
+      {
+        set._deleted = true;
+        setters.push(set);
+      }
+      callback();
+    });
+  }, function(err) {
+    if(err!=null)
+      console.error(err);
+    _this.db.bulkDocs({docs: setters}, callback);
   });
 }
 

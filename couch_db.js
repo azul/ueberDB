@@ -16,14 +16,11 @@
 
 var couch = require("felix-couchdb");
 var async = require("async");
-var util = require("util");
 
 exports.database = function(settings)
 {
   this.db=null;
   this.client=null;
-  
-  console.warn("settings: " + util.inspect(settings));
   
   this.settings = settings;
   
@@ -62,11 +59,11 @@ exports.database.prototype.set = function (key, value, callback)
   {
     if(doc == null)
     {
-      _this.db.saveDoc(JSON.stringify({_id: key, value: value}), callback);
+      _this.db.saveDoc({_id: key, value: value}, callback);
     }
     else
     {
-      _this.db.saveDoc(JSON.stringify({_id: key, _rev: doc._rev, value: value}), callback);
+      _this.db.saveDoc({_id: key, _rev: doc._rev, value: value}, callback);
     }
   });
 }
